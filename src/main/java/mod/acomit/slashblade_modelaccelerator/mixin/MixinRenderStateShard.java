@@ -1,6 +1,6 @@
-package mod.acomit.slashblade_modelaccelerator.obj.render.mixin;
+package mod.acomit.slashblade_modelaccelerator.mixin;
 
-import mod.arcomit.anran.core.obj.render.ModelRenderer;
+import mod.acomit.slashblade_modelaccelerator.render.ModelRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

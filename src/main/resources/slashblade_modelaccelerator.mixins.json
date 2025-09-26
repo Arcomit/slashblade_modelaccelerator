@@ -7,6 +7,9 @@
   "mixins": [
   ],
   "client": [
+    "MixinBufferUploader",
+    "MixinRenderStateShard",
+    "BladeRenderStateAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

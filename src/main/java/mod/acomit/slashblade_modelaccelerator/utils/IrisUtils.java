@@ -1,4 +1,4 @@
-package mod.acomit.slashblade_modelaccelerator.obj.utils;
+package mod.acomit.slashblade_modelaccelerator.utils;
 
 /**
  * @Author: Arcomit

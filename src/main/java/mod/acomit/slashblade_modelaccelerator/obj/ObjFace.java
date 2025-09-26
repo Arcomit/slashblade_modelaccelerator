@@ -1,7 +1,7 @@
-package mod.arcomit.anran.core.obj;
+package mod.acomit.slashblade_modelaccelerator.obj;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import mod.arcomit.anran.utils.WriteVerticesInfo;
+import mod.acomit.slashblade_modelaccelerator.utils.WriteVerticesInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;

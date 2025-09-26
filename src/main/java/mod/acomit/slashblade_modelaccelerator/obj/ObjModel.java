@@ -1,12 +1,10 @@
-package mod.arcomit.anran.core.obj;
+package mod.acomit.slashblade_modelaccelerator.obj;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.Getter;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.joml.Quaternionfc;
-import org.joml.Vector3fc;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,7 +66,9 @@ public class ObjModel {
     @OnlyIn(Dist.CLIENT)
     public void initAll(){
         for (ObjGroup groupObject : Groups.values()) {
-            groupObject.init();
+            if (groupObject.getVertexCount() != 0){
+                groupObject.init();
+            }
         }
     }
 

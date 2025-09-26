@@ -1,4 +1,4 @@
-package mod.arcomit.anran.core.obj;
+package mod.acomit.slashblade_modelaccelerator.obj;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

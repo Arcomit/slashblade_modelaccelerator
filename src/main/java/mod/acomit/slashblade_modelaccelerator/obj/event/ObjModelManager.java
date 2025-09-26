@@ -1,12 +1,13 @@
-package mod.arcomit.anran.core.obj.event;
+package mod.acomit.slashblade_modelaccelerator.obj.event;
 
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.systems.RenderSystem;
-import mod.arcomit.anran.Anran;
-import mod.arcomit.anran.core.obj.ModelParseException;
-import mod.arcomit.anran.core.obj.ObjModel;
-import mod.arcomit.anran.core.obj.ObjReader;
-import mod.arcomit.anran.utils.DefaultResources;
+import mod.acomit.slashblade_modelaccelerator.ModelAccelerator;
+import mod.acomit.slashblade_modelaccelerator.obj.ModelParseException;
+import mod.acomit.slashblade_modelaccelerator.obj.ObjModel;
+import mod.acomit.slashblade_modelaccelerator.obj.ObjReader;
+import mod.acomit.slashblade_modelaccelerator.utils.DefaultResources;
+import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
@@ -33,7 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @OnlyIn(Dist.CLIENT)
 public class ObjModelManager implements PreparableReloadListener {
 
-    private static final    String                          FILE_DIR      = "slashblade/models";
+    private static final    ResourceLocation                MODEL_DIR     = SlashBlade.prefix("model");
     private static final    String                          FILE_TYPES    = ".obj";
 
     private static final    Lock                            LOCK          = new ReentrantLock();
@@ -67,7 +68,9 @@ public class ObjModelManager implements PreparableReloadListener {
         Map<ResourceLocation, ObjModel> cache = Maps.newHashMap();
 
         Map<ResourceLocation, Resource> resources = resourceManager.listResources(
-                FILE_DIR, resLoc -> resLoc.getPath().toLowerCase(Locale.ROOT).endsWith(FILE_TYPES)
+                MODEL_DIR.getPath(),
+                resLoc -> resLoc.getNamespace().equals(MODEL_DIR.getNamespace())
+                        && resLoc.getPath().toLowerCase(Locale.ROOT).endsWith(FILE_TYPES)
         );
 
         resources.forEach((resourceLocation, resource) -> {
@@ -115,7 +118,7 @@ public class ObjModelManager implements PreparableReloadListener {
 
                         } catch (IOException | ModelParseException e) {
 
-                            Anran.LOGGER.warn("Failed to load model: {}", resourceLocation, e);
+                            ModelAccelerator.LOGGER.warn("Failed to load model: {}", resourceLocation, e);
 
                             return ObjModelManager.get(DefaultResources.DEFAULT_MODEL);
 

@@ -1,6 +1,6 @@
-package mod.arcomit.anran.utils;
+package mod.acomit.slashblade_modelaccelerator.utils;
 
-import mod.arcomit.anran.Anran;
+import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -9,6 +9,6 @@ import net.minecraft.resources.ResourceLocation;
  * @Description: TODO
  */
 public class DefaultResources {
-    public static final ResourceLocation DEFAULT_MODEL     = Anran.prefix("slashblade/models/blade2.obj");
-    public static final ResourceLocation DEFAULT_TEXTURE   = Anran.prefix("slashblade/models/blade.png");
+    public static final ResourceLocation DEFAULT_MODEL     = SlashBlade.prefix("model/blade.obj");
+    public static final ResourceLocation DEFAULT_TEXTURE   = SlashBlade.prefix("model/blade.png");
 }

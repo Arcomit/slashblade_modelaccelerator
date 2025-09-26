@@ -1,4 +1,4 @@
-package mod.arcomit.anran.core.obj;
+package mod.acomit.slashblade_modelaccelerator.obj;
 
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -56,7 +56,7 @@ public class ObjReader {
     private         final List<SimpleVector3f> positions    = new ArrayList<>();
     private         final List<SimpleVector3f> normals      = new ArrayList<>();
     private         final List<SimpleVector3f> uvs          = new ArrayList<>();
-    private               ObjGroup             currentGroup;
+    private               ObjGroup             currentGroup = model.getGroups().computeIfAbsent("Default", ObjGroup::new);
 
     private void parse(InputStream inputStream) throws IOException, ModelParseException {
         BufferedReader reader  = new BufferedReader(new InputStreamReader(inputStream));
@@ -202,7 +202,7 @@ public class ObjReader {
             face1.faceNormal = face1.computeUnitNormal();
         }
 
-        if (face1.vertices != null && currentGroup != null) {
+        if (face1.vertices != null) {
             currentGroup.getFaces().add(face1);
             currentGroup.setVertexCount(currentGroup.getVertexCount() + face1.vertices.length);
         } else {

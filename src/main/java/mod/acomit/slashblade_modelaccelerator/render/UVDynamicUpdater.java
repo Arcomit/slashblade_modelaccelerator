@@ -1,6 +1,6 @@
-package mod.acomit.slashblade_modelaccelerator.obj.render;
+package mod.acomit.slashblade_modelaccelerator.render;
 
-import mod.arcomit.anran.core.obj.utils.IrisUtils;
+import mod.acomit.slashblade_modelaccelerator.utils.IrisUtils;
 
 import java.nio.FloatBuffer;
 

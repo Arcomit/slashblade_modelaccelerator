@@ -1,4 +1,4 @@
-package mod.arcomit.anran.utils;
+package mod.acomit.slashblade_modelaccelerator.utils;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
  */
 public class RenderUtils {
     public static PoseStack copyPoseStack(PoseStack poseStack) {
+        if (poseStack == null) return null;
         PoseStack finalStack = new PoseStack();
         finalStack.setIdentity();
         finalStack.poseStack.addLast(poseStack.last());

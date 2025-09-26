@@ -1,4 +1,4 @@
-package mod.arcomit.anran.core.obj;
+package mod.acomit.slashblade_modelaccelerator.obj;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

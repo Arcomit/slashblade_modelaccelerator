@@ -1,8 +1,8 @@
-package mod.acomit.slashblade_modelaccelerator.obj.render.mixin;
+package mod.acomit.slashblade_modelaccelerator.mixin;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
-import mod.arcomit.anran.core.obj.render.ModelRenderer;
+import mod.acomit.slashblade_modelaccelerator.render.ModelRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

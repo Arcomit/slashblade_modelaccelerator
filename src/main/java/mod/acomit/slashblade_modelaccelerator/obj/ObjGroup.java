@@ -1,4 +1,4 @@
-package mod.arcomit.anran.core.obj;
+package mod.acomit.slashblade_modelaccelerator.obj;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.Getter;
@@ -39,10 +39,14 @@ public class ObjGroup {
     }
 
     public void init(){
-        renderCache.init();
+        if (vertexCount != 0){
+            renderCache.init();
+        }
     }
 
     public void render(RenderStateShard renderType){
-        renderCache.render(renderType);
+        if (vertexCount != 0) {
+            renderCache.render(renderType);
+        }
     }
 }

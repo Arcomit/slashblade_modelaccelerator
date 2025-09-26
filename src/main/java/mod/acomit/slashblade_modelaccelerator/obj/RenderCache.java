@@ -1,19 +1,21 @@
-package mod.arcomit.anran.core.obj;
+package mod.acomit.slashblade_modelaccelerator.obj;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import mod.arcomit.anran.core.obj.render.ColorDynamicUpdater;
-import mod.arcomit.anran.core.obj.render.ModelRenderer;
-import mod.arcomit.anran.core.obj.render.UVDynamicUpdater;
-import mod.arcomit.anran.core.obj.utils.IrisUtils;
-import mod.arcomit.anran.utils.RenderUtils;
-import mod.arcomit.anran.utils.WriteVerticesInfo;
+import mod.acomit.slashblade_modelaccelerator.render.ColorDynamicUpdater;
+import mod.acomit.slashblade_modelaccelerator.render.ModelRenderer;
+import mod.acomit.slashblade_modelaccelerator.render.UVDynamicUpdater;
+import mod.acomit.slashblade_modelaccelerator.utils.IrisUtils;
+import mod.acomit.slashblade_modelaccelerator.utils.RenderUtils;
+import mod.acomit.slashblade_modelaccelerator.utils.WriteVerticesInfo;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.ShaderInstance;
 import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
@@ -116,7 +118,10 @@ public class RenderCache {
             ShaderInstance shader = RenderSystem.getShader();
             int currentProgram = shader.getId();
             if (shader.MODEL_VIEW_MATRIX != null) {
-                shader.MODEL_VIEW_MATRIX.set(poseStack.last().pose());
+                Matrix4f currentModelView = new Matrix4f(RenderSystem.getModelViewMatrix());
+                Matrix4f poseMatrix = new Matrix4f(poseStack.last().pose());
+                currentModelView.mul(poseMatrix);
+                shader.MODEL_VIEW_MATRIX.set(currentModelView);
             }
             int nm = GL20.glGetUniformLocation(currentProgram, "iris_NormalMat");
             if (nm >= 0) {

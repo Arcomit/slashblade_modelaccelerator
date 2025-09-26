@@ -1,4 +1,4 @@
-package mod.acomit.slashblade_modelaccelerator.obj.render;
+package mod.acomit.slashblade_modelaccelerator.render;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
