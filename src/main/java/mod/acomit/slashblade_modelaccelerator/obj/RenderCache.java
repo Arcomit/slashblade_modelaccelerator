@@ -1,5 +1,6 @@
 package mod.acomit.slashblade_modelaccelerator.obj;
 
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -11,17 +12,17 @@ import mod.acomit.slashblade_modelaccelerator.render.UVDynamicUpdater;
 import mod.acomit.slashblade_modelaccelerator.utils.IrisUtils;
 import mod.acomit.slashblade_modelaccelerator.utils.RenderUtils;
 import mod.acomit.slashblade_modelaccelerator.utils.WriteVerticesInfo;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.ShaderInstance;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector4f;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import java.awt.*;
+import java.lang.Math;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -117,20 +118,83 @@ public class RenderCache {
             if (poseStack == null) return;
             ShaderInstance shader = RenderSystem.getShader();
             int currentProgram = shader.getId();
-            if (shader.MODEL_VIEW_MATRIX != null) {
-                Matrix4f currentModelView = new Matrix4f(RenderSystem.getModelViewMatrix());
-                Matrix4f poseMatrix = new Matrix4f(poseStack.last().pose());
-                currentModelView.mul(poseMatrix);
-                shader.MODEL_VIEW_MATRIX.set(currentModelView);
+            for (int i = 0; i < 12; ++i) {
+                int j = RenderSystem.getShaderTexture(i);
+                shader.setSampler("Sampler" + i, j);
             }
+            if (shader.MODEL_VIEW_MATRIX != null) {
+                shader.MODEL_VIEW_MATRIX.set(
+                        RenderSystem.getModelViewMatrix().mul(poseStack.last().pose(),new Matrix4f())
+                );
+            }
+            if (shader.PROJECTION_MATRIX != null) {
+                shader.PROJECTION_MATRIX.set(RenderSystem.getProjectionMatrix());
+            }
+            if (shader.INVERSE_VIEW_ROTATION_MATRIX != null) {
+                shader.INVERSE_VIEW_ROTATION_MATRIX.set(RenderSystem.getInverseViewRotationMatrix());
+            }
+            if (shader.COLOR_MODULATOR != null) {
+                shader.COLOR_MODULATOR.set(RenderSystem.getShaderColor());
+            }
+            if (shader.FOG_START != null) {
+                shader.FOG_START.set(RenderSystem.getShaderFogStart());
+            }
+            if (shader.FOG_END != null) {
+                shader.FOG_END.set(RenderSystem.getShaderFogEnd());
+            }
+            if (shader.FOG_COLOR != null) {
+                shader.FOG_COLOR.set(RenderSystem.getShaderFogColor());
+            }
+            if (shader.FOG_SHAPE != null) {
+                shader.FOG_SHAPE.set(RenderSystem.getShaderFogShape().getIndex());
+            }
+            if (shader.TEXTURE_MATRIX != null) {
+                shader.TEXTURE_MATRIX.set(RenderSystem.getTextureMatrix());
+            }
+            if (shader.GAME_TIME != null) {
+                shader.GAME_TIME.set(RenderSystem.getShaderGameTime());
+            }
+            if (shader.SCREEN_SIZE != null) {
+                Window window = Minecraft.getInstance().getWindow();
+                shader.SCREEN_SIZE.set((float)window.getWidth(), (float)window.getHeight());
+            }
+            // 法线在应用modelview矩阵之前就被应用到光照了，所以对Light Direction下手
+//            Matrix3f normal = new Matrix3f(poseStack.last().normal());
+//            if (shader.LIGHT0_DIRECTION != null) {
+//                Vector3f transformedLightDir = new Vector3f(RenderSystem.shaderLightDirections[0])
+//                        .mulTranspose(normal);
+//                shader.LIGHT0_DIRECTION.set(transformedLightDir);
+//            }
+//            if (shader.LIGHT1_DIRECTION != null) {
+//                Vector3f transformedLightDir = new Vector3f(RenderSystem.shaderLightDirections[1])
+//                        .mulTranspose(normal);
+//                shader.LIGHT1_DIRECTION.set(transformedLightDir);
+//            }
+            Matrix4f inverseModelMatrix = new Matrix4f();
+            poseStack.last().pose().invert(inverseModelMatrix);
+            inverseModelMatrix.transpose();
+            if (shader.LIGHT0_DIRECTION != null) {
+                Vector3f transformedLightDir = new Vector3f(RenderSystem.shaderLightDirections[0]);
+                inverseModelMatrix.transformDirection(transformedLightDir);
+                transformedLightDir.normalize();
+                shader.LIGHT0_DIRECTION.set(transformedLightDir);
+            }
+            if (shader.LIGHT1_DIRECTION != null) {
+                Vector3f transformedLightDir = new Vector3f(RenderSystem.shaderLightDirections[1]);
+                inverseModelMatrix.transformDirection(transformedLightDir);
+                transformedLightDir.normalize();
+                shader.LIGHT1_DIRECTION.set(transformedLightDir);
+            }
+            shader.apply();
             int nm = GL20.glGetUniformLocation(currentProgram, "iris_NormalMat");
             if (nm >= 0) {
                 Matrix3f normalMatrix = new Matrix3f(poseStack.last().normal());
-                FloatBuffer buffer = BufferUtils.createFloatBuffer(9);
+                FloatBuffer buffer = BufferUtils.createFloatBuffer(12);
                 normalMatrix.get(buffer);
                 GL20.glUniformMatrix3fv(nm, false, buffer);
             }
             shader.apply();
+
             GL30.glBindVertexArray(VAO);
             // 颜色
             reusableColorBuffer.clear();
@@ -165,6 +229,9 @@ public class RenderCache {
                     GL30.GL_UNSIGNED_INT,
                     0
             );
+
+            GL30.glVertexAttribI2i(IrisUtils.vaUV1, 0, 0);
+            GL30.glVertexAttribI2i(IrisUtils.vaUV2, 0, 0);
 
             GL30.glBindVertexArray(0);
             shader.clear();

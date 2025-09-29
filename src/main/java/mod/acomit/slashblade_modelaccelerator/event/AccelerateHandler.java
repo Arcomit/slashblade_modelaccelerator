@@ -23,6 +23,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.awt.*;
 import java.util.function.Function;
 
 /**
@@ -51,6 +52,7 @@ public class AccelerateHandler {
                     .getModel(mods.flammpfeil.slashblade.init.DefaultResources.resourceDurabilityModel);
             if (event.getModel().equals(durabilityModel)){
                 model = ObjModelManager.get(mods.flammpfeil.slashblade.init.DefaultResources.resourceDurabilityModel);
+                poseStack.scale(1.01f, 1.01f, 1.01f);
             }else {
                 ResourceLocation modelLocation = blade.getCapability(ItemSlashBlade.BLADESTATE)
                         .filter(s -> s.getModel().isPresent()).map(s -> s.getModel().get())
@@ -64,7 +66,17 @@ public class AccelerateHandler {
 
             WriteVerticesInfo.setLightMap(packedLightIn);
             WriteVerticesInfo.setPoseStack(poseStack);
-            WriteVerticesInfo.setColor(BladeRenderStateAccessor.getCol());
+
+            Color currentColor = null;
+            try {
+                currentColor = BladeRenderStateAccessor.getCol();
+            } catch (AssertionError e) {
+                currentColor = Color.white;
+            }
+            if (currentColor == null) {
+                currentColor = Color.white;
+            }
+            WriteVerticesInfo.setColor(currentColor);
             WriteVerticesInfo.setAlphaOverride(Face.alphaOverride);
             WriteVerticesInfo.setUvOperator(Face.uvOperator);
 

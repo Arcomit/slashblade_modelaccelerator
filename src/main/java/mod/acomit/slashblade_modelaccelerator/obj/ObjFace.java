@@ -151,7 +151,7 @@ public class ObjFace {
 
         // 归一化
         double length = Math.sqrt(nx * nx + ny * ny + nz * nz);
-        return new SimpleVector3f((float)(nx / length), (float)(ny / length), (float)(nz / length));
+        return length < 1.0E-4 ? new SimpleVector3f(0, 0, 0) : new SimpleVector3f((float)(nx / length), (float)(ny / length), (float)(nz / length));
     }
 
 

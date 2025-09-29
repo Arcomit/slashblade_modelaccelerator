@@ -17,5 +17,4 @@ public interface BladeRenderStateAccessor {
     static Color getCol() {
         throw new AssertionError();
     }
-
 }
